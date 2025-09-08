@@ -1,5 +1,6 @@
 from binance.client import Client
 import logging
+
 class LimitOrderBot:
     def __init__(self, api_key, api_secret, testnet=True):
         self.client = Client(api_key, api_secret, testnet=testnet)
@@ -24,20 +25,26 @@ class LimitOrderBot:
             logging.error(f"Limit order failed: {e}")
             print(f"Limit order failed: {e}")
             return None
+
 def main():
-    import sys
-    if len(sys.argv) != 5:
-        print("Usage: python limit_orders.py SYMBOL SIDE QUANTITY PRICE")
-        print("Example: python limit_orders.py BTCUSDT BUY 0.01 110000")
-        sys.exit(1)
-    symbol, side, quantity, price = sys.argv[1], sys.argv[2].upper(), float(sys.argv[3]), float(sys.argv[4])
+    print("Limit Order Placement")
+    symbol = input("Enter trading symbol (e.g., BTCUSDT): ").strip().upper()
+    side = input("Enter side (BUY or SELL): ").strip().upper()
+    quantity_input = input("Enter quantity: ").strip()
+    price_input = input("Enter limit price: ").strip()
+
+    try:
+        quantity = float(quantity_input)
+        price = float(price_input)
+    except ValueError:
+        print("Invalid quantity or price. Must be numbers.")
+        return
+
     API_KEY = "6fb8c22049dcaf1906093a75f421029449969dcb85391df8e9271d8fe1e3b227"
     API_SECRET = "00cde179d8253511429a0207defc11712be7fa729c124c8999776c6c93eabcfb"
 
     bot = LimitOrderBot(API_KEY, API_SECRET, testnet=True)
     bot.place_limit_order(symbol, side, quantity, price)
 
-
 if __name__ == "__main__":
     main()
-
